@@ -1,7 +1,7 @@
 on: [push, repository_dispatch, workflow_dispatch]
 
 env:
-  TARGET_PACKAGE: "@${{ github.repository_owner }}/npm-publish"
+  TARGET_PACKAGE: "@github-packages-examples/npm-publish"
 
 jobs:
   checkout-and-install:
@@ -22,11 +22,11 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          scope: ${{ github.repository_owner }}
+          scope: github-packages-examples
           registry-url: https://npm.pkg.github.com
 
       - name: Create a package called @${{ github.repository }}
-        run: npm init --scope ${{ github.repository_owner }} -y
+        run: npm init --scope github-packages-examples -y
 
       - name: Add index.js to package
         run: echo 'require("${{ env.TARGET_PACKAGE }}").sayHello()' > index.js
@@ -34,7 +34,7 @@ jobs:
       - name: Install a package
         run: npm install ${{ env.TARGET_PACKAGE }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Execute package
         run: npx .
